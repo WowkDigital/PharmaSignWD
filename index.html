@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharmacy Sign Simulator | LED Animation Studio</title>
+  <meta name="description" content="Advanced LED animation simulator for pharmacy display signs. Design, test, and preview effects in real-time.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body id="body-container"
+  class="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-neutral-900 via-neutral-950 to-black text-neutral-100 flex flex-col items-center justify-center p-4 font-sans selection:bg-emerald-500/30 transition-colors duration-500">
+
+  <!-- Header -->
+  <header class="mb-8 text-center">
+    <h1 class="text-3xl font-bold tracking-tight theme-text flex items-center justify-center gap-3">
+      <svg id="header-logo-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" class="animate-logo-glow">
+        <path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7V2z" />
+      </svg>
+      PHARMA-SIGN
+      <span id="version-badge" class="text-xs theme-bg-opacity px-2 py-1 rounded theme-text border theme-border-opacity font-semibold">v3.0 PRO</span>
+    </h1>
+    <p class="text-neutral-500 mt-2 text-sm font-medium">Interactive LED Matrix Simulator for Pharmacy Signs</p>
+  </header>
+
+  <main class="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+    <!-- Left column: Visualization -->
+    <section
+      class="lg:col-span-7 flex flex-col items-center bg-neutral-900/40 p-8 rounded-3xl border border-neutral-800/80 shadow-2xl backdrop-blur-md">
+
+      <!-- SVG Container -->
+      <div id="svg-wrapper"
+        class="relative p-6 rounded-2xl bg-black border-4 border-neutral-800 transition-all duration-300">
+        <svg id="svg-grid" class="w-full max-w-[360px] aspect-square select-none cursor-pointer">
+          <defs>
+            <filter id="ledGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+          <g id="led-circles"></g>
+        </svg>
+      </div>
+
+      <!-- Animation controls -->
+      <div class="mt-8 flex gap-4 w-full justify-center">
+        <button id="btn-play"
+          class="px-6 py-3 theme-bg theme-bg-hover text-neutral-950 rounded-full font-bold flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-black/40">
+          <span id="icon-play-container" class="flex items-center"></span>
+          <span id="text-play">PAUSE</span>
+        </button>
+        <button id="btn-reset"
+          class="px-6 py-3 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 rounded-full font-bold flex items-center gap-2 transition-all active:scale-95">
+          RESET
+        </button>
+      </div>
+
+      <!-- Diagnostic Dashboard -->
+      <div id="dashboard-panel" class="w-full mt-6 grid grid-cols-3 gap-2 px-4 py-3 rounded-2xl bg-black/60 border border-neutral-800/60 text-center text-xs">
+        <div>
+          <span class="text-neutral-500 block text-[9px] uppercase tracking-wider font-bold">Active LEDs</span>
+          <span id="dash-active-count" class="font-mono font-bold theme-text text-base">0</span>
+        </div>
+        <div>
+          <span class="text-neutral-500 block text-[9px] uppercase tracking-wider font-bold">Operation Mode</span>
+          <span id="dash-mode" class="font-bold text-neutral-300 text-xs truncate block mt-1 uppercase">Pulse</span>
+        </div>
+        <div>
+          <span class="text-neutral-500 block text-[9px] uppercase tracking-wider font-bold">Est. Power</span>
+          <span id="dash-power" class="font-mono font-bold text-neutral-300 text-base">--</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right column: Controls -->
+    <section class="lg:col-span-5 space-y-6">
+      <div class="bg-neutral-900/40 rounded-3xl border border-neutral-800/80 p-6 backdrop-blur-md shadow-2xl">
+
+        <!-- Tabs -->
+        <nav class="flex border-b border-neutral-800/80 mb-6">
+          <button id="tab-btn-display"
+            class="pb-3 px-4 text-sm font-semibold transition-all theme-text border-b-2 theme-border">
+            Operation Modes
+          </button>
+          <button id="tab-btn-settings"
+            class="pb-3 px-4 text-sm font-semibold transition-all text-neutral-500 hover:text-neutral-300">
+            Settings
+          </button>
+        </nav>
+
+        <!-- Content: Modes -->
+        <div id="tab-display" class="space-y-6">
+          <div id="modes-grid" class="grid grid-cols-2 gap-3">
+            <!-- Modes will be injected by JS here -->
+          </div>
+          
+          <!-- Dynamic mode-specific control panel -->
+          <div id="mode-specific-container" class="hidden p-4 rounded-2xl bg-neutral-950/60 border border-neutral-800/60 space-y-3">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <!-- Content: Settings -->
+        <div id="tab-settings" class="hidden space-y-6">
+
+          <!-- LED Color Selection -->
+          <div class="space-y-3">
+            <label class="text-sm font-medium text-neutral-400">LED Backlight Color</label>
+            <div id="color-picker" class="flex flex-wrap items-center gap-3">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Resolution -->
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <label class="text-sm font-medium text-neutral-400">Resolution (Grid)</label>
+              <span id="val-grid-size" class="theme-text font-mono text-xs font-bold">15x15</span>
+            </div>
+            <input id="input-grid-size" type="range" min="9" max="35" step="2" value="15"
+              class="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer theme-accent" />
+          </div>
+
+          <!-- Animation speed -->
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <label class="text-sm font-medium text-neutral-400">Animation speed</label>
+              <span id="val-speed" class="theme-text font-mono text-xs font-bold">1.0x</span>
+            </div>
+            <input id="input-speed" type="range" min="0.1" max="3.0" step="0.1" value="1.0"
+              class="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer theme-accent" />
+          </div>
+
+          <!-- Glow Effect -->
+          <div class="flex items-center justify-between p-4 bg-neutral-950/60 border border-neutral-800/60 rounded-2xl">
+            <div class="flex items-center gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="text-neutral-400">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2" />
+                <path d="M12 20v2" />
+                <path d="m4.93 4.93 1.41 1.41" />
+                <path d="m17.66 17.66 1.41 1.41" />
+                <path d="M2 12h2" />
+                <path d="M20 12h2" />
+                <path d="m6.34 17.66-1.41 1.41" />
+                <path d="m19.07 4.93-1.41 1.41" />
+              </svg>
+              <span class="text-sm font-medium">Glow Effect</span>
+            </div>
+            <button id="btn-glow" class="w-12 h-6 rounded-full transition-all relative theme-bg">
+              <div id="glow-indicator"
+                class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform translate-x-6"></div>
+            </button>
+          </div>
+
+          <!-- Additional info -->
+          <div class="p-4 theme-bg-opacity border theme-border-opacity rounded-2xl flex gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="theme-text shrink-0">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            <p class="text-xs theme-text opacity-90 leading-relaxed font-medium">
+              Higher resolutions emulate modern high-density matrices. The "Rainbow RGB" color animates the full RGB spectrum.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Interactive power modes at the bottom -->
+      <footer class="flex items-center justify-center gap-8 text-neutral-600 border-t border-neutral-800/60 pt-6">
+        <button id="btn-low-power" class="flex flex-col items-center group transition-colors hover:text-neutral-400">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-105 transition-transform">
+            <path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2" />
+            <path d="M9.6 4.6A2 2 0 1 1 11 8H2" />
+            <path d="M12.6 19.4A2 2 0 1 0 14 16H2" />
+          </svg>
+          <span class="text-[9px] mt-1 font-bold uppercase tracking-widest transition-colors duration-150" id="lbl-low-power">Low Power: OFF</span>
+        </button>
+        <button id="btn-night-mode" class="flex flex-col items-center group transition-colors hover:text-neutral-400">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-105 transition-transform">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+          </svg>
+          <span class="text-[9px] mt-1 font-bold uppercase tracking-widest transition-colors duration-150" id="lbl-night-mode">Night Mode: OFF</span>
+        </button>
+      </footer>
+    </section>
+  </main>
+
+  <div class="mt-12 text-neutral-600 text-[10px] tracking-[0.2em] font-bold uppercase">
+    Open 24/7 • Professional Pharmacy LED Signs
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+
+</html>

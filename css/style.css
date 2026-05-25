@@ -1,0 +1,45 @@
+:root {
+  --primary-color: #10b981;
+  --primary-bg-opacity: rgba(16, 185, 129, 0.1);
+  --primary-border-opacity: rgba(16, 185, 129, 0.35);
+}
+
+.theme-text {
+  color: var(--primary-color) !important;
+  transition: color 0.15s ease;
+}
+.theme-bg {
+  background-color: var(--primary-color) !important;
+  transition: background-color 0.15s ease;
+}
+.theme-bg-hover:hover {
+  filter: brightness(1.15);
+}
+.theme-border {
+  border-color: var(--primary-color) !important;
+  transition: border-color 0.15s ease;
+}
+.theme-border-opacity {
+  border-color: var(--primary-border-opacity) !important;
+  transition: border-color 0.15s ease;
+}
+.theme-bg-opacity {
+  background-color: var(--primary-bg-opacity) !important;
+  transition: background-color 0.15s ease;
+}
+.theme-accent {
+  accent-color: var(--primary-color) !important;
+}
+
+/* Glow pulse effect for header icon */
+@keyframes pulse-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px var(--primary-color));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px var(--primary-color));
+  }
+}
+.animate-logo-glow {
+  animation: pulse-glow 2s infinite ease-in-out;
+}
