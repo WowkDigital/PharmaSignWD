@@ -8,7 +8,7 @@
   <meta name="description" content="Advanced LED animation simulator for pharmacy display signs. Design, test, and preview effects in real-time.">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdn.jsdelivr.net/gh/WowkDigital/WowkDigitalFooter@latest/wowk-digital-footer.js"></script>
+  <script src="./wowk-digital-footer.js"></script>
 </head>
 
 <body id="body-container"
@@ -96,6 +96,36 @@
         <div id="tab-display" class="space-y-6">
           <div id="modes-grid" class="grid grid-cols-2 gap-3">
             <!-- Modes will be injected by JS here -->
+          </div>
+
+          <!-- Auto-Switch Modes Panel -->
+          <div id="auto-switch-panel" class="p-4 rounded-2xl bg-neutral-950/60 border border-neutral-800/60 space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                  class="theme-text">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+                </svg>
+                <div>
+                  <span class="text-xs font-semibold block">Auto-Cycle Modes</span>
+                  <span class="text-[10px] text-neutral-500 font-medium">Rotate animations automatically</span>
+                </div>
+              </div>
+              <button id="btn-auto-switch" class="w-12 h-6 rounded-full transition-all relative bg-neutral-700">
+                <div id="auto-switch-indicator"
+                  class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform"></div>
+              </button>
+            </div>
+            
+            <div id="auto-switch-settings" class="hidden space-y-3 border-t border-neutral-800/60 pt-3">
+              <div class="flex justify-between items-center">
+                <label class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider">Switch Interval</label>
+                <span id="val-switch-interval" class="theme-text font-mono text-xs font-bold">5s</span>
+              </div>
+              <input id="input-switch-interval" type="range" min="3" max="30" step="1" value="5"
+                class="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer theme-accent" />
+            </div>
           </div>
           
           <!-- Dynamic mode-specific control panel -->

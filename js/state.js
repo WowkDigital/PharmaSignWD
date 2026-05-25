@@ -12,5 +12,7 @@ export const state = {
   text: 'PHARMACY 24H',
   customDesign: new Set(),
   lowPower: false,
-  nightMode: false
+  nightMode: false,
+  autoSwitch: false,
+  switchInterval: 5
 };

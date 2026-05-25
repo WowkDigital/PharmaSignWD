@@ -32,7 +32,12 @@ export const els = {
   btnLowPower: document.getElementById('btn-low-power'),
   lblLowPower: document.getElementById('lbl-low-power'),
   btnNightMode: document.getElementById('btn-night-mode'),
-  lblNightMode: document.getElementById('lbl-night-mode')
+  lblNightMode: document.getElementById('lbl-night-mode'),
+  btnAutoSwitch: document.getElementById('btn-auto-switch'),
+  autoSwitchIndicator: document.getElementById('auto-switch-indicator'),
+  autoSwitchSettings: document.getElementById('auto-switch-settings'),
+  inputSwitchInterval: document.getElementById('input-switch-interval'),
+  valSwitchInterval: document.getElementById('val-switch-interval')
 };
 
 let circlesRefs = [];
@@ -231,6 +236,7 @@ export function renderModes() {
       renderModes();
       updateModeSpecificPanel();
       updateGridColors();
+      window.dispatchEvent(new CustomEvent('mode-changed'));
     });
   });
 }
@@ -355,6 +361,23 @@ export function updateUI() {
   // Slider values
   els.valGridSize.textContent = `${state.gridSize}x${state.gridSize}`;
   els.valSpeed.textContent = `${Number(state.speed).toFixed(1)}x`;
+
+  // Auto switch toggle state
+  if (els.btnAutoSwitch && els.autoSwitchIndicator && els.autoSwitchSettings) {
+    if (state.autoSwitch) {
+      els.btnAutoSwitch.className = "w-12 h-6 rounded-full transition-colors relative theme-bg";
+      els.autoSwitchIndicator.className = "absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform translate-x-6";
+      els.autoSwitchSettings.classList.remove('hidden');
+    } else {
+      els.btnAutoSwitch.className = "w-12 h-6 rounded-full transition-colors relative bg-neutral-700";
+      els.autoSwitchIndicator.className = "absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform";
+      els.autoSwitchSettings.classList.add('hidden');
+    }
+  }
+
+  if (els.valSwitchInterval) {
+    els.valSwitchInterval.textContent = `${state.switchInterval}s`;
+  }
 
   // Low power mode label
   if (state.lowPower) {

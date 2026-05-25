@@ -1,4 +1,5 @@
 import { state } from './state.js';
+import { modes } from './constants.js';
 import { 
   els, 
   buildGrid, 
@@ -6,10 +7,37 @@ import {
   updateUI, 
   renderModes, 
   renderColors, 
-  setTab 
+  setTab,
+  updateModeSpecificPanel
 } from './ui.js';
 
 let intervalId = null;
+let autoSwitchIntervalId = null;
+const cycleModes = ['pulse', 'spiral', 'snake', 'checker', 'radar', 'heartbeat', 'ripple', 'sparkle', 'text', 'clock'];
+
+function startAutoSwitch() {
+  if (autoSwitchIntervalId) {
+    clearInterval(autoSwitchIntervalId);
+    autoSwitchIntervalId = null;
+  }
+  if (state.autoSwitch) {
+    autoSwitchIntervalId = setInterval(() => {
+      if (!state.isPlaying) return;
+      
+      const currentIdx = cycleModes.indexOf(state.animation);
+      const nextIdx = currentIdx === -1 ? 0 : (currentIdx + 1) % cycleModes.length;
+      state.animation = cycleModes[nextIdx];
+      
+      const modeObj = modes.find(m => m.id === state.animation);
+      if (els.dashMode && modeObj) {
+        els.dashMode.textContent = modeObj.name;
+      }
+      renderModes();
+      updateModeSpecificPanel();
+      updateGridColors();
+    }, state.switchInterval * 1000);
+  }
+}
 
 // ANIMATION LOOP
 function loop() {
@@ -74,12 +102,35 @@ function init() {
     updateGridColors();
   });
 
+  // Auto switch toggles
+  if (els.btnAutoSwitch) {
+    els.btnAutoSwitch.addEventListener('click', () => {
+      state.autoSwitch = !state.autoSwitch;
+      updateUI();
+      startAutoSwitch();
+    });
+  }
+
+  if (els.inputSwitchInterval) {
+    els.inputSwitchInterval.addEventListener('input', (e) => {
+      state.switchInterval = parseInt(e.target.value);
+      updateUI();
+      startAutoSwitch();
+    });
+  }
+
+  // Listening to manual mode changes to reset timer
+  window.addEventListener('mode-changed', () => {
+    startAutoSwitch();
+  });
+
   // Initial UI components render
   renderModes();
   renderColors();
   buildGrid();
   updateUI();
   startAnimationLoop();
+  startAutoSwitch();
   // Initialize WowkDigitalFooter
   if (typeof WowkDigitalFooter !== 'undefined') {
     WowkDigitalFooter.init({
