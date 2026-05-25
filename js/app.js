@@ -80,6 +80,17 @@ function init() {
   buildGrid();
   updateUI();
   startAnimationLoop();
+  // Initialize WowkDigitalFooter
+  if (typeof WowkDigitalFooter !== 'undefined') {
+    WowkDigitalFooter.init({
+      siteName: 'PHARMA-SIGN',
+      container: 'body',
+      brandName: 'Wowk Digital',
+      brandUrl: 'https://github.com/WowkDigital',
+      showHubLink: true,
+      hubUrl: 'https://wowkdigital.github.io/WD_HUB/'
+    });
+  }
 }
 
 // Start application!
